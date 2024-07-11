@@ -1,11 +1,11 @@
---1. Cuál es la cantidad de unidades de películas arrendadas desde el 24 de julio hasta el 24 de diciembre del 2005
+--1. Cual es la cantidad de unidades de peliculas arrendadas desde el 24 de julio hasta el 24 de diciembre del 2005
 SELECT SUM(FR.UNIDADES) AS cantidad_alquileres
 FROM FACT_RENTAL FR
 JOIN DIM_TIEMPO DT ON FR.ID_TIEMPO = DT.ID_TIEMPO
 WHERE (DT.ANNIO = 2005 AND DT.MES >= 7 AND DT.DIA >= 24)
    OR (DT.ANNIO = 2005 AND DT.MES = 12 AND DT.DIA <= 24);
 	
--- 2. Cuál fue la cantidad de unidades de películas arrendadas de la categoría "Family" durante el mes de julio de 2005?
+-- 2. Cual fue la cantidad de unidades de peliculas arrendadas de la categoria "Family" durante el mes de julio de 2005?
 SELECT 
 	 DC.CATEGORIA AS CATEGORIA,
 	 SUM(FR.UNIDADES) AS TOTAL_UNIDADES
@@ -18,7 +18,7 @@ WHERE DT.ANNIO = 2005
 GROUP BY DC.CATEGORIA
 ORDER BY SUM(FR.UNIDADES) DESC;
 
--- 3. Cuántas unidades de películas arrendadas con idioma ingles y de la categoría “games” se realizaron en la Tienda 1, en el mes julio del 2005
+-- 3. Cuantas unidades de peliculas arrendadas con idioma ingles y de la categoria "games" se realizaron en la Tienda 1, en el mes julio del 2005
 SELECT 
 	DC.CATEGORIA AS CATEGORIA,
 	DL.LENGUAJE AS LENGUAJE,
@@ -35,7 +35,7 @@ WHERE DT.ANNIO = 2005
 GROUP BY DC.CATEGORIA, DL.LENGUAJE
 ORDER BY SUM(FR.UNIDADES) DESC;
 
--- 4. Cantidad de unidades de películas arrendadas de la categoría "Horror" por tienda durante el mes de diciembre de 2004
+-- 4. Cantidad de unidades de peliculas arrendadas de la categoria "Horror" por tienda durante el mes de diciembre de 2004
 SELECT FR.ID_TIENDA, SUM(FR.UNIDADES) AS Total_Unidades_Horror
 FROM FACT_RENTAL FR
 JOIN DIM_TIEMPO DT ON FR.ID_TIEMPO = DT.ID_TIEMPO
@@ -44,17 +44,23 @@ WHERE DT.ANNIO = 2005
 AND DC.CATEGORIA = 'Horror'
 GROUP BY FR.ID_TIENDA;
 
--- 5. Cantidad de unidades de películas de la categoría "Music" en la Tienda 2, entre junio y agosto del 2005
-SELECT SUM(FR.UNIDADES) AS Total_Unidades_Music
+-- 5. Cantidad de unidades de peliculas de la categoria "Music" en la Tienda 2, entre junio y agosto del 2005
+SELECT 
+	FR.ID_TIENDA AS TIENDA,
+	DC.CATEGORIA AS CATEGORIA,
+	DT. MES AS MES,
+	DT.ANNIO AS ANNIO,
+	SUM(FR.UNIDADES) AS Total_Unidades_Music
 FROM FACT_RENTAL FR
 JOIN DIM_TIEMPO DT ON FR.ID_TIEMPO = DT.ID_TIEMPO
 JOIN DIM_CATEGORIA DC ON FR.ID_CATEGORIA = DC.ID_CATEGORIA
 WHERE DT.ANNIO = 2005
   AND DT.MES BETWEEN 6 AND 8
   AND DC.CATEGORIA = 'Music'
-  AND FR.ID_TIENDA = 2;
+  AND FR.ID_TIENDA = 2
+GROUP BY FR.ID_TIENDA, CATEGORIA, MES, ANNIO;
 
--- 6. Cantidad de unidades de películas arrendadas de la categoría "Sports" en Argentina durante agosto de 2005
+-- 6. Cantidad de unidades de peliculas arrendadas de la categoria "Sports" en Argentina durante agosto de 2005
 SELECT SUM(FR.UNIDADES) AS cantidad_alquileres
 FROM FACT_RENTAL FR
 JOIN DIM_CATEGORIA DC ON FR.ID_CATEGORIA = DC.ID_CATEGORIA
@@ -63,7 +69,7 @@ WHERE DC.CATEGORIA = 'Sports'
   AND DD.PAIS = 'Argentina'
   AND FR.ID_TIEMPO BETWEEN '2005-08-01' AND '2005-08-31';
 
--- 7. Cantidad de unidades de películas arrendadas entre 2005 y 2006 con idioma italiano
+-- 7. Cantidad de unidades de peliculas arrendadas entre 2005 y 2006 con idioma italiano
 SELECT SUM(FR.UNIDADES) AS Total_Unidades_Italiano
 FROM FACT_RENTAL FR
 JOIN DIM_TIEMPO DT ON FR.ID_TIEMPO = DT.ID_TIEMPO
@@ -71,7 +77,7 @@ JOIN DIM_LENGUAJE DL ON FR.ID_LENGUAJE = DL.ID_LENGUAJE
 WHERE DT.ANNIO IN (2005, 2006)
   AND DL.LENGUAJE = 'English';
 
--- 8. Películas arrendadas en 2005 con costo de reemplazo entre 15 y 25 dólares
+-- 8. Peliculas arrendadas en 2005 con costo de reemplazo entre 15 y 25 dolares
 SELECT SUM(FR.UNIDADES) AS Total_Peliculas
 FROM FACT_RENTAL FR
 JOIN DIM_TIEMPO DT ON FR.ID_TIEMPO = DT.ID_TIEMPO
@@ -79,7 +85,7 @@ JOIN DIM_PELICULA DP ON FR.ID_PELICULA = DP.ID_FILM
 WHERE DT.ANNIO = 2005
   AND DP.remplazar_costo BETWEEN 15 AND 25;
 
--- 9. Películas arrendadas en la tienda 1 en 2005 entre enero y septiembre
+-- 9. Peliculas arrendadas en la tienda 1 en 2005 entre enero y septiembre
 SELECT SUM(FR.UNIDADES) AS Total_Peliculas
 FROM FACT_RENTAL FR
 JOIN DIM_TIEMPO DT ON FR.ID_TIEMPO = DT.ID_TIEMPO
@@ -101,7 +107,7 @@ WHERE
     AND DT.ID_TIEMPO BETWEEN '2005-05-01' AND '2005-05-31';
 
 
--- 11. Cantidad promedio de días de alquiler para películas de "Acción" de abril a junio de 2005
+-- 11. Cantidad promedio de dias de alquiler para peliculas de "Accion" de abril a junio de 2005
 SELECT AVG(DATEDIFF(DAY, DT.ID_TIEMPO, DT2.ID_TIEMPO)) AS Promedio_Dias_Alquiler
 FROM FACT_RENTAL FR
 JOIN DIM_TIEMPO DT ON FR.ID_TIEMPO = DT.ID_TIEMPO
@@ -113,7 +119,7 @@ WHERE DT.ANNIO = 2005
   AND DC.CATEGORIA = 'Action'
   AND DT2.ID_TIEMPO > DT.ID_TIEMPO;
 
--- 12. Categoría más alquilada por clientes de idioma inglés en 2006
+-- 12. Categoria mas alquilada por clientes de idioma ingles en 2006
 SELECT TOP 1 DC.CATEGORIA, COUNT(*) AS Total_Alquileres
 FROM FACT_RENTAL FR
 JOIN DIM_TIEMPO DT ON FR.ID_TIEMPO = DT.ID_TIEMPO
@@ -124,7 +130,7 @@ WHERE DT.ANNIO = 2006
 GROUP BY DC.CATEGORIA
 ORDER BY Total_Alquileres DESC;
 
--- 13. Costo promedio de reemplazo de películas alquiladas por clientes con más de 5 años de registro en 2005
+-- 13. Costo promedio de reemplazo de pelï¿½culas alquiladas por clientes con mï¿½s de 5 aï¿½os de registro en 2005
 SELECT AVG(DP.remplazar_costo) AS Promedio_Costo_Reemplazo
 FROM FACT_RENTAL FR
 JOIN DIM_TIEMPO DT ON FR.ID_TIEMPO = DT.ID_TIEMPO
@@ -142,7 +148,7 @@ WHERE DT.ANNIO IN (2005, 2006)
 GROUP BY DC.ID_CLIENTE, DC.NOMBRE, DC.APELLIDO
 ORDER BY Total_Ingresos DESC;
 
--- 15. Ingreso total por alquileres de películas de "Aventura" en la tienda 2 durante 2005
+-- 15. Ingreso total por alquileres de pelï¿½culas de "Aventura" en la tienda 2 durante 2005
 SELECT SUM(FR.DINERO) AS ingreso_total
 FROM FACT_RENTAL FR
 JOIN DIM_CATEGORIA DC ON FR.ID_CATEGORIA = DC.ID_CATEGORIA
@@ -151,14 +157,14 @@ WHERE DC.CATEGORIA = 'Horror'
   AND FR.ID_TIENDA = 2
   AND DT.ANNIO = 2005;
 
--- 16. Ingreso total por alquileres de todas las películas en la tienda 2 durante 2005
+-- 16. Ingreso total por alquileres de todas las pelï¿½culas en la tienda 2 durante 2005
 SELECT SUM(FR.DINERO) AS Total_Ingresos
 FROM FACT_RENTAL FR
 JOIN DIM_TIEMPO DT ON FR.ID_TIEMPO = DT.ID_TIEMPO
 WHERE DT.ANNIO = 2005
   AND FR.ID_TIENDA = 2;
 
--- 17. Unidades de películas alquiladas a clientes con más de 1 año de registro durante 2005
+-- 17. Unidades de pelï¿½culas alquiladas a clientes con mï¿½s de 1 aï¿½o de registro durante 2005
 SELECT SUM(FR.UNIDADES) AS cantidad_unidades
 FROM FACT_RENTAL FR
 JOIN DIM_CLIENTE DC ON FR.ID_CLIENTE = DC.ID_CLIENTE
@@ -166,7 +172,7 @@ JOIN DIM_TIEMPO DT ON FR.ID_TIEMPO = DT.ID_TIEMPO
 WHERE DATEDIFF(YEAR, DC.CREAR_DATOS, GETDATE()) > 1
   AND DT.ANNIO = 2005;
 
--- 18. Unidades de películas de "Animación" alquiladas por clientes de habla japonesa en 2005
+-- 18. Unidades de pelï¿½culas de "Animaciï¿½n" alquiladas por clientes de habla japonesa en 2005
 SELECT SUM(FR.UNIDADES) AS Total_Unidades_Animacion_Japones
 FROM FACT_RENTAL FR
 JOIN DIM_TIEMPO DT ON FR.ID_TIEMPO = DT.ID_TIEMPO
@@ -176,7 +182,7 @@ WHERE DT.ANNIO = 2005
   AND DC.CATEGORIA = 'Animation'
   AND DL.LENGUAJE = 'English';
 
--- 19. Ingreso total por arriendos de películas de "Viajes" en la tienda 1 durante el 2005 y 2006
+-- 19. Ingreso total por arriendos de pelï¿½culas de "Viajes" en la tienda 1 durante el 2005 y 2006
 SELECT SUM(FR.DINERO) AS Total_Ingresos_Viajes
 FROM FACT_RENTAL FR
 JOIN DIM_TIEMPO DT ON FR.ID_TIEMPO = DT.ID_TIEMPO
@@ -185,7 +191,7 @@ WHERE DT.ANNIO = 2005
   AND DC.CATEGORIA = 'Travel'
   AND FR.ID_TIENDA = 1;
 
--- 20. Cantidad de unidades de películas arrendadas por día durante mayo de 2005
+-- 20. Cantidad de unidades de pelï¿½culas arrendadas por dï¿½a durante mayo de 2005
 SELECT DT.ID_TIEMPO, SUM(FR.UNIDADES) AS Total_Unidades
 FROM FACT_RENTAL FR
 JOIN DIM_TIEMPO DT ON FR.ID_TIEMPO = DT.ID_TIEMPO
@@ -194,7 +200,7 @@ WHERE DT.ANNIO = 2005
 GROUP BY DT.ID_TIEMPO
 ORDER BY DT.ID_TIEMPO;
 
--- 21. Total de ingresos por arriendos de películas de "Acción" en Rashunka, Zambia, durante los primeros 3 meses de 2005
+-- 21. Total de ingresos por arriendos de pelï¿½culas de "Acciï¿½n" en Rashunka, Zambia, durante los primeros 3 meses de 2005
 SELECT SUM(FR.DINERO) AS Total_Ingresos_Accion
 FROM FACT_RENTAL FR
 JOIN DIM_TIEMPO DT ON FR.ID_TIEMPO = DT.ID_TIEMPO
