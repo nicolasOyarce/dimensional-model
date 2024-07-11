@@ -1,0 +1,10 @@
+execute [dbo].[CARGA_DIM_PELICULA]
+execute [dbo].[CARGA_DIM_CATEGORIA]
+execute [dbo].[CARGA_DIM_CLIENTE]
+execute [dbo].[CARGA_DIM_TIENDA]
+execute [dbo].[CARGA_DIM_DIRECCION]
+execute [dbo].[CARGA_DIM_LENGUAJE]
+execute [dbo].[CARGA_DIM_TIEMPO]
+execute [dbo].[CARGA_FACT_RENTAL]
+
+EXEC [dbo].[PROCESO_DIMENSIONAL_COMPLETO]
