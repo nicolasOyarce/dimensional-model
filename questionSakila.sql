@@ -33,6 +33,11 @@ GROUP BY
 
 --Pregunta 3:X
 SELECT 
+	i.store_id AS ID_STORE,
+	c.name AS CATEGORY,
+	l.name AS LANGUAGE,
+	DATEPART(YEAR, r.rental_date) AS YEAR,
+    DATEPART(MONTH, r.rental_date) AS MONTH,
 	COUNT(f.film_id) AS TOTAL_UNITS
 FROM rental r
 	INNER JOIN inventory i ON r.inventory_id=i.inventory_id
@@ -40,88 +45,154 @@ FROM rental r
 	INNER JOIN film_category fc ON f.film_id=fc.film_id
 	INNER JOIN category c ON fc.category_id=c.category_id
 	INNER JOIN language l ON f.language_id=l.language_id
- WHERE c.name='Games'
+WHERE c.name='Games'
 	 AND i.store_id = 1
 	 AND l.name='English'
-	 AND r.rental_date BETWEEN'2005-07-01'AND'2005-08-01';
+	 AND r.rental_date BETWEEN'2005-07-01'AND'2005-08-01'
+GROUP BY
+	i.store_id,
+    c.name,
+	l.name,
+    DATEPART(YEAR, r.rental_date),
+    DATEPART(MONTH, r.rental_date);
 
 --Pregunta 4:X
 SELECT 
-	s.store_id,
-	COUNT(r.rental_id) AS horror_rentals
+	s.store_id AS ID_STORE,
+	c.name AS CATEGORY,
+	DATEPART(YEAR, r.rental_date) AS YEAR,
+    DATEPART(MONTH, r.rental_date) AS MONTH,
+	COUNT(r.rental_id) AS TOTAL_UNITS
 FROM rental r
 	JOIN inventory i ON r.inventory_id=i.inventory_id
 	JOIN store s ON i.store_id=s.store_id
 	JOIN film f ON i.film_id=f.film_id
 	JOIN film_category fc ON f.film_id=fc.film_id
 	JOIN category c ON fc.category_id=c.category_id
- WHERE c.name='Horror'
- AND r.rental_date BETWEEN'2004-12-01'AND'2005-12-31'
- GROUP BY s.store_id;
+WHERE c.name='Horror'
+	AND r.rental_date BETWEEN'2005-08-01'AND'2005-08-31'
+GROUP BY 
+	s.store_id,
+	c.name,
+	DATEPART(YEAR, r.rental_date),
+    DATEPART(MONTH, r.rental_date);
 
 --Pregunta 5:X
- SELECT COUNT(F.film_id) AS total_rentals
- FROM rental r
- JOIN inventory i ON r.inventory_id=i.inventory_id
- JOIN film f ON i.film_id=f.film_id
- JOIN film_category fc ON f.film_id=fc.film_id
- JOIN category c ON fc.category_id=c.category_id
- WHERE c.name='Music'
- AND i.store_id=2
- AND r.rental_date BETWEEN'2005-06-01'AND'2005-08-31';
+SELECT 
+	i.store_id AS ID_STORE,
+	c.name AS CATEGORY,
+	DATEPART(YEAR, r.rental_date) AS YEAR,
+    DATEPART(MONTH, r.rental_date) AS MONTH,	
+	COUNT(F.film_id) AS TOTAL_UNITS
+FROM rental r
+	JOIN inventory i ON r.inventory_id=i.inventory_id
+	JOIN film f ON i.film_id=f.film_id
+	JOIN film_category fc ON f.film_id=fc.film_id
+	JOIN category c ON fc.category_id=c.category_id
+WHERE c.name='Music'
+	AND i.store_id = 2
+	AND r.rental_date BETWEEN'2005-06-01'AND'2005-08-31'
+GROUP BY 
+	i.store_id,
+	c.name,
+	DATEPART(YEAR, r.rental_date),
+    DATEPART(MONTH, r.rental_date);
 
 --Pregunta 6:
-SELECT COUNT(*) AS cantidad_alquileres
+SELECT 
+	co.country AS COUNTRY,
+	c.name AS CATEGORY,
+	DATEPART(YEAR, r.rental_date) AS YEAR,
+    DATEPART(MONTH, r.rental_date) AS MONTH,	
+	COUNT(*) AS TOTAL_UNITS
 FROM rental r
-INNER JOIN inventory i ON r.inventory_id = i.inventory_id
-INNER JOIN film f ON i.film_id = f.film_id
-INNER JOIN film_category fc ON f.film_id = fc.film_id
-INNER JOIN category c ON fc.category_id = c.category_id
-INNER JOIN customer cu ON r.customer_id = cu.customer_id
-INNER JOIN address a ON cu.address_id = a.address_id
-INNER JOIN city ci ON a.city_id = ci.city_id
-INNER JOIN country co ON ci.country_id = co.country_id
+	INNER JOIN inventory i ON r.inventory_id = i.inventory_id
+	INNER JOIN film f ON i.film_id = f.film_id
+	INNER JOIN film_category fc ON f.film_id = fc.film_id
+	INNER JOIN category c ON fc.category_id = c.category_id
+	INNER JOIN customer cu ON r.customer_id = cu.customer_id
+	INNER JOIN address a ON cu.address_id = a.address_id
+	INNER JOIN city ci ON a.city_id = ci.city_id
+	INNER JOIN country co ON ci.country_id = co.country_id
 WHERE c.name = 'Sports'
-AND co.country = 'Australia'
-AND r.rental_date BETWEEN '2005-08-01' AND '2005-08-31';
+	AND co.country = 'Australia'
+	AND r.rental_date BETWEEN '2005-08-01' AND '2005-08-31'
+GROUP BY
+	co.country,
+	c.name,
+	DATEPART(YEAR, r.rental_date),
+    DATEPART(MONTH, r.rental_date);
 
 --Pregunta 7:X
- SELECT COUNT(*) AS cantidad_peliculas_arrendadas
- FROM rental r
- JOIN inventory i ON r.inventory_id=i.inventory_id
- JOIN film f ON i.film_id=f.film_id
- JOIN language l ON f.language_id=l.language_id
- WHERE l.name='English'
- AND r.rental_date BETWEEN'2005-01-01'AND'2006-12-31';
+SELECT 
+	l.name AS LANGUAGE,
+	DATEPART(YEAR, r.rental_date) AS YEAR,
+	COUNT(*) AS cantidad_peliculas_arrendadas
+FROM rental r
+	JOIN inventory i ON r.inventory_id=i.inventory_id
+	JOIN film f ON i.film_id=f.film_id
+	JOIN language l ON f.language_id=l.language_id
+WHERE l.name='English'
+	AND r.rental_date BETWEEN'2005-01-01'AND'2006-12-31'
+GROUP BY
+	l.name,
+	DATEPART(YEAR, r.rental_date);
 
 --Pregunta 8:X
- SELECT COUNT(*) AS cantidad_peliculas_arrendadas
- FROM rental r
- JOIN inventory i ON r.inventory_id=i.inventory_id
- JOIN film f ON i.film_id=f.film_id
- WHERE f.replacement_cost BETWEEN 15 AND 25
- AND r.rental_date BETWEEN'2005-01-01'AND'2005-12-31';
+SELECT 
+	f.replacement_cost AS REMPLACEMENT_COST,
+	DATEPART(YEAR, r.rental_date) AS YEAR,
+	COUNT(*) AS TOTAL_UNITS
+FROM rental r
+	JOIN inventory i ON r.inventory_id=i.inventory_id
+	JOIN film f ON i.film_id=f.film_id
+WHERE f.replacement_cost BETWEEN 15 AND 25
+	AND r.rental_date BETWEEN'2005-01-01'AND'2005-12-31'
+GROUP BY
+	f.replacement_cost,
+	DATEPART(YEAR, r.rental_date);
 
 --Pregunta 9:X
-SELECT COUNT(*) AS cantidad_peliculas_arrendadas
- FROM rental r
- JOIN inventory i ON r.inventory_id=i.inventory_id
- WHERE i.store_id=1
- AND r.rental_date BETWEEN'2005-01-01'AND'2005-09-30';
+SELECT 
+	i.store_id AS ID_STORE,
+	DATEPART(YEAR, r.rental_date) AS YEAR,
+    DATEPART(MONTH, r.rental_date) AS MONTH,	
+	COUNT(*) AS TOTAL_UNITS
+FROM rental r
+	INNER JOIN inventory i ON r.inventory_id=i.inventory_id
+WHERE i.store_id=1
+	AND r.rental_date BETWEEN'2005-01-01'AND'2005-09-30'
+GROUP BY 
+	i.store_id,
+	DATEPART(YEAR, r.rental_date),
+    DATEPART(MONTH, r.rental_date);
 
 --Pregunta 10:
-SELECT SUM(p.amount) AS total_ingresos
+SELECT 
+	i.store_id AS ID_STORE,
+	DATEPART(YEAR, r.rental_date) AS YEAR,
+    DATEPART(MONTH, r.rental_date) AS MONTH,	
+	SUM(p.amount) AS total_ingresos
 FROM payment p
-INNER JOIN rental r ON p.rental_id = r.rental_id
+	INNER JOIN rental r ON p.rental_id = r.rental_id
+	INNER JOIN inventory i ON r.inventory_id=i.inventory_id
 WHERE r.rental_date BETWEEN '2005-05-01' AND '2005-06-01'
-AND r.inventory_id IN (
-    SELECT i.inventory_id
-    FROM inventory i
-    WHERE i.store_id = 1
-);
+	AND r.inventory_id IN (
+		SELECT i.inventory_id
+		FROM inventory i
+		WHERE i.store_id = 1
+	)
+GROUP BY 
+	i.store_id,
+	DATEPART(YEAR, r.rental_date),
+    DATEPART(MONTH, r.rental_date);
 
 --Pregunta 11:
-SELECT SUM(p.amount) AS total_ingresos
+SELECT 
+	co.country AS COUNTRY,
+	DATEPART(YEAR, r.rental_date) AS YEAR,
+    DATEPART(MONTH, r.rental_date) AS MONTH,
+	SUM(p.amount) AS TOTAL_AMOUNT
 FROM payment p
 	INNER JOIN rental r ON p.rental_id = r.rental_id
 	INNER JOIN staff s ON r.staff_id = s.staff_id
@@ -130,7 +201,11 @@ FROM payment p
 	INNER JOIN city c ON a.city_id = c.city_id
 	INNER JOIN country co ON c.country_id = co.country_id
 WHERE co.country = 'Canada'
-  AND p.payment_date BETWEEN '2005-07-01' AND '2005-08-01'
+	AND p.payment_date BETWEEN '2005-07-01' AND '2005-08-01'
+GROUP BY 
+	co.country,
+	DATEPART(YEAR, r.rental_date),
+    DATEPART(MONTH, r.rental_date);
 
 
 --Pregunta 12: X
