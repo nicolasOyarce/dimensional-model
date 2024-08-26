@@ -207,7 +207,6 @@ GROUP BY
 	DATEPART(YEAR, r.rental_date),
     DATEPART(MONTH, r.rental_date);
 
-
 --Pregunta 12: X
 
 
@@ -310,42 +309,64 @@ GROUP BY
 
 --Pregunta 19:X
 SELECT 
+	S.store_id AS ID_STORE,
+	c.name AS CATEGORY,
+	DATEPART(YEAR, r.rental_date) AS YEAR,
 	SUM(p.amount) AS TOTAL_AMOUNT
 FROM payment p
-	JOIN rental r ON p.rental_id = r.rental_id
-	JOIN inventory i ON r.inventory_id = i.inventory_id
-	JOIN film f ON i.film_id = f.film_id
-	JOIN film_category fc ON f.film_id = fc.film_id
-	JOIN category c ON fc.category_id = c.category_id
-	JOIN store s ON i.store_id = s.store_id
-	JOIN address a ON s.address_id = a.address_id
+	INNER JOIN rental r ON p.rental_id = r.rental_id
+	INNER JOIN inventory i ON r.inventory_id = i.inventory_id
+	INNER JOIN film f ON i.film_id = f.film_id
+	INNER JOIN film_category fc ON f.film_id = fc.film_id
+	INNER JOIN category c ON fc.category_id = c.category_id
+	INNER JOIN store s ON i.store_id = s.store_id
+	INNER JOIN address a ON s.address_id = a.address_id
 WHERE c.name = 'Travel'
 	AND s.store_id = 1
-	AND p.payment_date BETWEEN '2005-01-01' AND '2006-01-01';
+	AND p.payment_date BETWEEN '2005-01-01' AND '2006-01-01'
+GROUP BY
+	S.store_id,
+	c.name,
+	DATEPART(YEAR, r.rental_date);
 	                                                                             
 --Pregunta 20:X
 SELECT 
-	CONVERT(DATE, r.rental_date) AS fecha, 
-	COUNT(*) AS cantidad_peliculas_arrendadas
+	DATEPART(YEAR, rental_date) AS YEAR,
+    DATEPART(MONTH, rental_date) AS MONTH,
+	DATEPART(DAY, rental_date) AS DAY,
+	COUNT(*) AS TOTAL_UNITS
 FROM rental r
-WHERE r.rental_date BETWEEN '2005-05-01' 
-	AND '2005-06-01'
-GROUP BY CONVERT(DATE, r.rental_date)
+WHERE r.rental_date BETWEEN '2005-05-01' AND '2005-06-01'
+GROUP BY
+    DATEPART(YEAR, rental_date),
+    DATEPART(MONTH, rental_date),
+	DATEPART(DAY, rental_date);
 
 --Pregunta 21:
- SELECT SUM(p.amount)AS
- ingresos_accion_rashunka_zambia_q1_2005
- FROM payment P
- INNER JOIN rental r ON p.rental_id=r.rental_id	
- INNER JOIN inventory i ON r.inventory_id=i.inventory_id
- INNER JOIN store s ON i.store_id=s.store_id
- INNER JOIN address a ON s.address_id=a.address_id
- INNER JOIN city c ON a.city_id=c.city_id
- INNER JOIN country co ON c.country_id=co.country_id
- INNER JOIN film f ON i.film_id=f.film_id
- INNER JOIN film_category fc ON f.film_id=fc.film_id
- INNER JOIN category ca ON fc.category_id=ca.category_id
- WHERE ca.name='Action'
- AND c.city='Lethbridge'
- AND co.country='Canada'
- AND p.payment_date BETWEEN'2005-06-01' AND '2005-12-31';
+SELECT 
+	co.country AS COUNTRY,
+	c.city AS CITY,
+	ca.name AS CATEGORY,
+	DATEPART(YEAR, rental_date) AS YEAR,
+    DATEPART(MONTH, rental_date) AS MONTH,
+	SUM(p.amount)AS TOTAL_AMOUNT
+FROM payment P
+	INNER JOIN rental r ON p.rental_id=r.rental_id	
+	INNER JOIN inventory i ON r.inventory_id=i.inventory_id
+	INNER JOIN store s ON i.store_id=s.store_id
+	INNER JOIN address a ON s.address_id=a.address_id
+	INNER JOIN city c ON a.city_id=c.city_id
+	INNER JOIN country co ON c.country_id=co.country_id
+	INNER JOIN film f ON i.film_id=f.film_id
+	INNER JOIN film_category fc ON f.film_id=fc.film_id
+	INNER JOIN category ca ON fc.category_id=ca.category_id
+WHERE ca.name='Action'
+	AND c.city='Lethbridge'
+	AND co.country='Canada'
+	AND p.payment_date BETWEEN'2005-06-01' AND '2005-12-31'
+GROUP BY
+	co.country,
+	c.city,
+	ca.name,
+	DATEPART(YEAR, rental_date),
+    DATEPART(MONTH, rental_date);
